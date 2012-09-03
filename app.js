@@ -2,18 +2,20 @@ var flatiron = require('flatiron'),
     union = require('union'),
     ecstatic = require('ecstatic'),
     path = require('path'),
+    fs = require('fs'),
     app = flatiron.app;
 
 app.config.file({ file: path.join(__dirname, 'config', 'config.json') });
+app.resources = require('./resources');
 
-app.use(flatiron.plugins.http, {
+app.use(flatiron.plugins.http, {}, {
   before: [
     ecstatic(__dirname + '/public')
   ]
 });
 
-app.router.get('/', function () {
-  this.res.json({ 'hello': 'world' })
-});
+require('./templates')(app.router);
 
-app.start(3000);
+app.use(require('restful'));
+
+app.start(8000);
