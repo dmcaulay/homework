@@ -14,10 +14,39 @@ module.exports = {
       function validRoute(route) {
         return req.url.indexOf(route) == 0;
       };
+      // ignore if the file is not in an assets directory
       if (!_.any(routes, validRoute)) return next();
 
+      // if the file exists we simply send that
+      var files = [ { name: root + req.url, compiler: res.end } ];
+
+      // grab possible compilers for this extension
+      var compilers = compilerMap[ext];
+      if (compilers) {
+        var rootFileName = root + req.url.slice(0, -(ext.length));
+        // map possible file names to compilers
+        var toAdd = _.map(_.keys(compilers), function(key) {
+          return { name: rootFileName + key, compiler: function(data) {
+            compilers[key](data, function(err, data) {
+              if (err) throw err;
+              res.end(data);
+            });
+          }};
+        })
+        // add possible files to list
+        files.push.apply(files, toAdd);
+      }
+
+      // compile each file
+      async.forEach(files, function(file) {
+        compile(file.name, file.compiler); 
+      }, function(err) {
+        if (err) throw err;
+        if (!completed) next();
+      });
+
       var complete = false;
-      function handle(fullName, handler) {
+      function compile(fullName, compiler) {
         fs.exists(fullName, function(exists) {
           if (!exists) return;
           if (complete) throw new Error('asset file conflict:' + fullName);
@@ -26,35 +55,10 @@ module.exports = {
             if (err) {
               throw err;
             }
-            handler(data);
+            compiler(data);
           });
         });
       }
-
-      // if the extension doesn't change we simply send that file
-      var files = [ { name: root + req.url, handler: res.end } ];
-
-      // else we compile and send that
-      var compilers = compilerMap[ext];
-      if (compilers) {
-        var rootFileName = root + req.url.slice(0, -(ext.length));
-        var toAdd = _.map(_.keys(compilers), function(key) {
-          return { name: rootFileName + key, handler: function(data) {
-            compilers[key](data, function(err, data) {
-              if (err) throw err;
-              res.end(data);
-            });
-          }};
-        })
-        files.push.apply(files, toAdd);
-      }
-
-      async.forEach(files, function(file) {
-        handle(file.name, file.handler); 
-      }, function(err) {
-        if (err) throw err;
-        if (!completed) next();
-      });
     };
   }
 };
