@@ -22,7 +22,7 @@ module.exports = {
           if (!exists) return;
           if (complete) throw new Error('asset file conflict:' + fullName);
           complete = true;
-          fs.readFile(root + req.url, 'utf8', function(err, data) {
+          fs.readFile(fullName, 'utf8', function(err, data) {
             if (err) {
               throw err;
             }
@@ -31,26 +31,26 @@ module.exports = {
         });
       }
 
-      // if the extension doesn't change we simpley send that file
-      var files = [ { name: root + req.url, handler: req.end } ];
+      // if the extension doesn't change we simply send that file
+      var files = [ { name: root + req.url, handler: res.end } ];
 
-      // else we compiler and send that
+      // else we compile and send that
       var compilers = compilerMap[ext];
       if (compilers) {
         var rootFileName = root + req.url.slice(0, -(ext.length));
-        var toAdd = _.map(_.keys(compilers), function(ext) {
-          return { name: rootFileName + ext, handler: function(data) {
+        var toAdd = _.map(_.keys(compilers), function(key) {
+          return { name: rootFileName + key, handler: function(data) {
             compilers[key](data, function(err, data) {
               if (err) throw err;
               res.end(data);
             });
-          };
+          }};
         })
-        files.push.appy(files, toAdd);
+        files.push.apply(files, toAdd);
       }
 
       async.forEach(files, function(file) {
-        handler(file.name, file.handler); }); 
+        handle(file.name, file.handler); 
       }, function(err) {
         if (err) throw err;
         if (!completed) next();

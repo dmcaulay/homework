@@ -53,7 +53,7 @@ describe('asset-pipe', function() {
       res.setHeader = function(name, value) { header[name] = value; };
       res.end = function(compiled) {
         compiled.should.equal(data);
-        done()
+        done();
       };
       assetPipe.middleware(root, assets, compilers)(req, res, function(req, res, next) {
         assert(false, 'should handle request');
@@ -61,9 +61,9 @@ describe('asset-pipe', function() {
     });
   });
   it('compiles with the appropriate compiler if it exists', function(done) {
-    fs.readFile(__dirname + '/fixtures/assets/css/style-less.less', 'utf8', function(err, data) {
+    fs.readFile(__dirname + '/fixtures/builtAssets/css/style-less.css', 'utf8', function(err, data) {
       should.not.exist(err);
-      var req = { url: '/fixtures/assets/css/style-less.js', method: 'GET' };
+      var req = { url: '/fixtures/assets/css/style-less.css', method: 'GET' };
       var res = new Stream();
       var header = {};
       res.setHeader = function(name, value) { header[name] = value; };
