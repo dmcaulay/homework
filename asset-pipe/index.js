@@ -6,15 +6,17 @@ var fs = require('fs'),
 
 module.exports = {
   middleware: function(root, assets, compilerMap) {
+    compilerMap = _.extend(compilerMap || {}, require('./compilers')(root, assets));
     return function(req, res, next) {
       if (req.method != 'GET' && req.method != 'HEAD') return next();
     
       var ext = path.extname(req.url).slice(1),
           routes = assets[ext];
+
+      // ignore if the file is not in an assets directory
       function validRoute(route) {
         return req.url.indexOf(route) == 0;
       };
-      // ignore if the file is not in an assets directory
       if (!_.any(routes, validRoute)) return next();
 
       // if the file exists we simply send that
