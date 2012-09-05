@@ -18,6 +18,7 @@ app.use(flatiron.plugins.http, {
   ]
 });
 
+// host templates
 require('./templates')(app.router);
 
 app.use(require('restful'));
