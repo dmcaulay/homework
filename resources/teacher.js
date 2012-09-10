@@ -1,9 +1,11 @@
-var resourceful = require('resourceful'),
-    Teacher;
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema,
+    Class = require('./class');
 
-module.exports = Teacher = resourceful.define('teacher');
+var Teacher = new Schema({
+  email: String,
+  password: String,
+  classes: [Class];
+});
+module.exports = mongoose.model('Teacher', Teacher);
 
-Teacher.string('email');
-Teacher.string('password');
-Teacher.child('class');
-Teacher.restful = true;

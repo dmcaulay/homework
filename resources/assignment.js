@@ -1,10 +1,10 @@
-var resourceful = require('resourceful'),
-    Assignment;
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema;
 
-module.exports = Assignment = resourceful.define('assignment');
+module.exports = new Schema({
+  name: String,
+  description: String,
+  assignedDate: {type: Date, defualt: Date.now},
+  dueDate: Date
+});
 
-Assignment.string('name');
-Assignment.string('description');
-Assignment.number('dueDate', { format: "unix-time" });
-Assignment.timestamps();
-Assignment.restful = true;

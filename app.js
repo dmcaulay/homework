@@ -7,7 +7,6 @@ var flatiron = require('flatiron'),
     app = flatiron.app;
 
 app.config.file({ file: path.join(__dirname, 'config', 'config.json') });
-app.resources = require('./resources');
 
 app.use(flatiron.plugins.http, {
   before: [
@@ -19,8 +18,15 @@ app.use(flatiron.plugins.http, {
 });
 
 // host templates
-require('./templates')(app.router);
-
-app.use(require('restful'));
+var templates = require('./templates');
+templates.http(app.router);
 
 app.start(8000);
+
+// socket.io
+require('./socket')(app.server, [
+  require('./resources'), // host resources
+  templates.stream
+]);
+
+

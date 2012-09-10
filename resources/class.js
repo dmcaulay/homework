@@ -1,9 +1,10 @@
-var resourceful = require('resourceful'),
-    Class;
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema,
+    Assignment = require('./assignment');
 
-module.exports = Class = resourceful.define('class');
+module.exports = new Schema({
+  name: String,
+  description: String,
+  assignments: [Assignment];
+});
 
-Class.string('name');
-Class.string('description');
-Class.child('assignment');
-Class.restful = true;
