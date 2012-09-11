@@ -5,6 +5,6 @@ var mongoose = require('mongoose'),
 module.exports = new Schema({
   name: String,
   description: String,
-  assignments: [Assignment];
+  assignments: [Assignment]
 });
 

@@ -5,7 +5,7 @@ var mongoose = require('mongoose'),
 var Teacher = new Schema({
   email: String,
   password: String,
-  classes: [Class];
+  classes: [Class]
 });
 module.exports = mongoose.model('Teacher', Teacher);
 
