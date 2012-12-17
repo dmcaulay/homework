@@ -5,6 +5,5 @@ var io = require('socket.io-client'),
 
 client = io.connect('http://localhost:8000');
 
-var Teacher = require('./resources/client')('Teacher', client);
-
+var router = require('./routes/client')($('#body'), client);
 
