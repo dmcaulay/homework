@@ -16,7 +16,8 @@
     "mongoose-troop": "0.0.7",
     "passport": "~0.1.12",
     "passport-local": "~0.1.6",
-    "jquery-browserify": "~1.8.1"
+    "jquery-browserify": "~1.8.1",
+    "cookie": "0.0.5"
   },
   "devDependencies": {
     "api-easy": "0.3.2",
